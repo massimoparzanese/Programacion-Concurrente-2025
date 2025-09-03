@@ -1,0 +1,5 @@
+- Los semáforos deben estar declarados en todos los ejercicios.
+- Los semáforos deben estar inicializados en todos los ejercicios.
+- No se puede utilizar ninguna sentencia para setear o ver el valor de un semáforo.
+- Debe evitarse hacer busy waiting en todos los ejercicios.
+- En todos los ejercicios el tiempo debe representarse con la función delay.
