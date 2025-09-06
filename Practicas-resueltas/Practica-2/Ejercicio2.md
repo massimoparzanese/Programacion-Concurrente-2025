@@ -14,7 +14,7 @@ situaciones:
 
 ## Resolución
 
-a.
+### A
 ```
 sem mutexPrint = 1
 Fallo historial[N];
@@ -32,7 +32,7 @@ prcoess colaborador[id:0..3]{
 }
 
 ```
-b.
+### B
 ```
 sem mutexNivel[4] = ([4] 1);    
 int contador[4] = ([4] 0); 
@@ -51,7 +51,7 @@ prcoess colaborador[id:0..3]{
 
 ```
 
-c.
+### C
 ```
 sem mutexNivel[N] = ([N] 1);    
 int contador[4] = ([4] 0); 
@@ -60,12 +60,10 @@ prcoess colaborador[id:0..3]{
     int nivel; // se le asigna un nivel al proceso
     int nivelhis;
     for (int j = 0; j < n; j++) {
-        P(mutexNivel[j]);
             nivelhis = historial[j].nivel;
             if(nivel == nivelhis){
                 contador[nivel] = contador[nivel] + 1; // Incremento seguro
             }
-        V(mutexNivel[j]);
     }
 }
 

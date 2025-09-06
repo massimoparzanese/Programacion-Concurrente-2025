@@ -12,9 +12,10 @@ una vez, siendo aleatoria esa cantidad de veces.
 
 ## Resolución
 
-a. Debería tener N procesos persona, un semáforo que será para usar el detector de metales.
+### A
+Debería tener N procesos persona, un semáforo que será para usar el detector de metales.
 
-b.
+### B
 ```
 sem detector = 1;
 process persona[id:0..n-1]{
@@ -24,7 +25,8 @@ process persona[id:0..n-1]{
     V(detector)
 }
 ```
-c.
+
+### C
 ```
 sem detectore = 3;
 process persona[id:0..n-1]{
@@ -35,14 +37,14 @@ process persona[id:0..n-1]{
 }
 ```
 
-d.
+### D
 ```
 sem detectore = 3;
 int MAX = 15;
 process persona[id:0..n-1]{
     // llega al detector
     int veces = random(1, MAX);
-    for i: 1 to veces{
+    for i = 1 to veces{
         P(detector) // espera en caso de estar ocupado
         // realiza el proceso
         V(detector)
