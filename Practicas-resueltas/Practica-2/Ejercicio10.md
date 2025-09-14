@@ -14,7 +14,7 @@ importa el orden de llegada para descargar. Nota: maximice la concurrencia.
 
 ### A
 
->[!Important] Consultar ya que me genera duda que haya demasiados semáforos y el hecho de preguntar por el tipo también se me hace raro
+>[!Important] Cambiar el A utilizando 2 colas
 ```
 sem c_trigo[T] = ([T] 0);
 sem c_maiz[M] = ([M] 0);

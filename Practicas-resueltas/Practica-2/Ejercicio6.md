@@ -90,7 +90,7 @@ Cola c;
 int proximo;
 process persona(id:0...N){
     Documento doc;
-    while(true){
+    while(true){ // puede no estar
         P(mutex)
         push(c,id)
         V(mutex)
@@ -101,7 +101,7 @@ process persona(id:0...N){
     }
 }
 process coordinador{
-    while(true){
+    while(true){ // podría ser hasta N
         P(pedidos)
         P(mutex)
         proximo = pop(c);

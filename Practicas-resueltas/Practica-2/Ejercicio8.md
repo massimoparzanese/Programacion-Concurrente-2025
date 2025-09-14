@@ -21,8 +21,9 @@ int piezas_fabricadas = 0;
 int idMax = 0;
 int max = 0;
 process empleado[id:1..E-1]{
-    int cantidad_producida;
+    int cantidad_producida = 0;
     P(mutex)
+    emple = emple + 1;
     if(emple = E-1){
         for i: 1 to E-1  V(barrera)
         V(mutex)
@@ -33,11 +34,12 @@ process empleado[id:1..E-1]{
     }
     P(mutex)
     while(piezas_fabricadas < T){
+        piezas_fabricadas = piezas_fabricadas + 1;
         V(mutex)
         // producir pieza
         cantidad_producida = cantidad_producida + 1;
         P(mutex)
-        piezas_fabricadas = piezas_fabricadas + 1;
+        
     }
     V(mutex)
     P(mutex_max)

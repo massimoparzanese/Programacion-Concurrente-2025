@@ -11,19 +11,33 @@ alumnos tendrán la tarea 1, otros 5 la tarea 2 y así sucesivamente para las 10
 
 ## Resolución
 ```
-int contrador_grupo[10] = ([10] 0)
-sem barrera[10] = ([10] 0)
-int puntajes[10] = ([10] 0)
 sem mutex = 1;
+sem mutex_tarea = 1;
 sem avisar_profesor = 0;
+sem mutex_cant = 1;
+sem barrera[10] = ([10] 0);
+sem esperar_compañeros = 0;        
+int puntajes[10] = ([10] 0)
 cola avisos;
-process alumno[id: 0...49]{
+int M = N / 5
+int N = 50;
+int cant = 0;
+process alumno[id: 0.. N-1]{
+    P(mutex_tarea)
     int tarea = elegir();
+    V(mutex_tarea)
+    P(mutex_cant)
+    cant = cant + 1
+    if(cant < N){
+        V(mutex_cant)
+        P(esperar_compañeros)
+    }
+    else{
+        V(mutex_cant)
+    }
     // realiza su tarea
-
     // Aviso al profesor
     P(mutex);
-    contador[tarea] = contador[tarea] + 1;
     push(avisos,tarea)
     V(mutex);
     V(avisar_profesor)
@@ -33,11 +47,14 @@ process alumno[id: 0...49]{
 }
 
 process profesor{
+    int contador[10] = ([10] 0)
     int puntaje = 1;
-     while (true) {
+     while (puntaje < M) {
         P(avisar_profesor)
         P(mutex)
         int tarea = pop(avisos)
+        V(mutex)
+        contador[tarea] = contador[tarea] + 1;
         if(contador[tarea] == 5){
             puntajes[tarea] = puntaje;
             puntaje = puntaje + 1;
@@ -45,7 +62,7 @@ process profesor{
                 V(barrera[tarea]);
             }
         }
-        V(mutex)
+        
      }
 }
 ```

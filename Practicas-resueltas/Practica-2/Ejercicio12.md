@@ -46,7 +46,9 @@ process Recepcionista{
         }
         asignacion[id] = indice;
         V(esperarRespuesta[id]);
+        P(mutex[indice])
         esperando[indice] = esperando[indice] + 1
+        V(mutex[indice])
         total = total + 1;
     }
 }
@@ -54,6 +56,7 @@ process persona[id:0..149]{
     P(mutex_r)
     push(r,id)
     V(mutex_r)
+    V(hay_gente)
     P(esperarRespuesta[id])
     int asignado = asignacion[id]
     P(mutex_cola[asignado])
