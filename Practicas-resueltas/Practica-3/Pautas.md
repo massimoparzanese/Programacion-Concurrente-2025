@@ -1,0 +1,11 @@
+**CONSIDERACIONES PARA RESOLVER LOS EJERCICIOS:**
+- Los monitores utilizan el protocolo signal and continue.
+- A una variable condition SÓLO pueden aplicársele las operaciones SIGNAL, SIGNALALL y WAIT.
+- NO puede utilizarse el wait con prioridades.
+- NO se puede utilizar ninguna operación que determine la cantidad de procesos encolados en una variable condition o si está vacía.
+- La única forma de comunicar datos entre monitores o entre un proceso y un monitor es por medio de invocaciones al procedimiento del monitor del cual se quieren obtener (o enviar) los datos.
+- No existen variables globales.
+- En todos los ejercicios debe maximizarse la concurrencia.
+- En todos los ejercicios debe aprovecharse al máximo la característica de exclusión mutua que brindan los monitores.
+- Debe evitarse hacer busy waiting.
+- En todos los ejercicios el tiempo debe representarse con la función delay.
