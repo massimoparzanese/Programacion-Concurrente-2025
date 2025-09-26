@@ -11,33 +11,32 @@ peso (ningún vehículo supera el peso soportado por el puente).
 ```
 Monitor Puente {
     int peso_restante = 50000;
-    cond cola[N];
-    int siguiente = -1;
-    Cola autos; // ids ordenados por orden de llegada
-    process solicitarAcceso(peso,id: in int){
-        if(siguiente == -1){
-            siguiente = id
+    Cola autos;  -- ids de vehículos en orden de llegada
+    cond espera[N];
+
+    procedure solicitarAcceso(peso, id: in int) {
+        push(autos, id);
+
+        -- esperar hasta que me toque y además haya peso
+        while (id != front(autos) || peso_restante < peso) {
+            wait(espera[id]);
         }
-        else{
-            push(autos,id);
-        }
-        while(peso_restante < peso || id != siguiente){
-            wait(cola[id]);
-        }
+
+        -- ahora sí entro
+        pop(autos);
         peso_restante = peso_restante - peso;
+        -- despertar solo al siguiente en orden (si existe)
+        if (!autos.empty()) {
+            int prox = front(autos);
+            signal(espera[prox]);
+        }
     }
 
-    process salirDelPuente(peso: in int){
-        if(!autos.empty()){
-            siguiente = pop(autos);        
-        }
-        else{
-            signal(cola[id]);
-        }
+    procedure salirDelPuente(peso: in int) {
         peso_restante = peso_restante + peso;
-        
     }
 }
+
 process vehiculo[id:0..N-1]{
     int peso;
     Puente.solicitarAcceso(peso);
