@@ -45,7 +45,7 @@ Monitor barreraEquipos[id:0..4]{
         cantEquipo ++;
         if(cant < 5) wait(compañeros)
         else {
-            formarPartidos.unirse(id,c);
+            formarPartidos.unirse(id,c); // podria llamarse desde fuera del monitor y que el signal all lo haga desde otro procedure para no bloquear el monitor
             signal_all(compañeros)
         }
         cancha = c;
@@ -60,7 +60,7 @@ Monitor cancha[id:0..1]{
     procedure llegada(){
         cant ++;
         if(cant == 10) signal(esperar)
-        wait(terminar)
+        wait(terminar) 
     }
     procedure iniciar(){
         if(jugadores < 10) wait(esperar)

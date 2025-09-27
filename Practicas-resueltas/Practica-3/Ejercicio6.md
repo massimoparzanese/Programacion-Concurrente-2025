@@ -9,7 +9,6 @@ les asigna un puntaje (el primer grupo en terminar tendrá como nota 25, el segu
 sucesivamente hasta el último que tendrá nota 1). Nota: el JTP no guarda el número de grupo
 que le asigna a cada alumno.
 
-> Acomodar y formar barrera con los alumnos en la fila, que el profesor solo se encargue del escritorio. Que los alumnos se coordinen entre ellos
 ## Resolución
 
 ```
