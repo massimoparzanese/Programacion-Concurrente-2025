@@ -12,47 +12,45 @@ necesario que se esperen para salir).
 ## Resolucion
 
 > [!important]
-> Modificar esto para que hagan una barrera en la cual solo el ultimo de ese equipo llama a formar partido y en ese caso espera a que se le avise que esta el otro equipo. Dentro de formar partido solo 1 de ese equipo deberia esperar a que llegue el otro equipo, y en otro de los 4 montores esperan los companieros 
+> Consultar, ya se le realizaron las modificaciones pedidas.
 ```
 Monitor formarPartido {
-    int cantEquipo[4] = [0,0,0,0]
     int equipoCancha[4]
     int canchaActual = 1
     int equiposEsperando = 0
     cond colaEquipos[4]   -- un cond por equipo
-    cola esperaEquipos      -- para guardar ids de equipos completos
+    cola esperaEquipos    -- para guardar ids de equipos completos
 
     procedure unirse(equipo: in int; canchaAsignada: out int){
-        cantEquipo[equipo]++
-
-        -- Si el equipo no está completo, esperar
-        if cantEquipo[equipo] < 5 
-            wait(colaEquipos[equipo])
-        -- Si soy el último del equipo, encolar al equipo
-        else if cantEquipo[equipo] == 5 {
-            push(esperaEquipos, equipo)
-
-            -- Si hay dos equipos completos, asignar cancha y avisar
+            push(esperaEquipos, equipo);
             if length(esperaEquipos) >= 2{
                 int eq1 = pop(esperaEquipos)
                 int eq2 = pop(esperaEquipos)
-
-                -- asignar cancha a ambos equipos
-                asignarCancha(eq1, canchaActual)
-                asignarCancha(eq2, canchaActual)
+                equipoCancha[eq1] = canchaActual;
+                equipoCancha[eq2] = canchaActual;
+                canchaActual ++;
+                signal(colaEquipos[eq1])
             }
             else {wait(colaEquipos[equipo])}     
 
         -- Devolver cancha asignada al jugador
         canchaAsignada = equipoCancha[equipo]
+    }
+}
+Monitor barreraEquipos[id:0..4]{
+    int cantEquipo = 0;
+    cond compañeros;
+    int c;
+    prodecure listo(cancha: out int){
+        cantEquipo ++;
+        if(cant < 5) wait(compañeros)
+        else {
+            formarPartidos.unirse(id,c);
+            signal_all(compañeros)
         }
+        cancha = c;
     }
-
-    procedure asignarCancha(equipo: in int, c: in int){
-        -- guardar cancha asignada para el equipo
-        equipoCancha[equipo] = c
-        signalAll(colaEquipos[equipo]) -- despertar a todos los jugadores de ese equipo
-    }
+    
 }
 Monitor cancha[id:0..1]{
     int jugadores = 0;
@@ -86,8 +84,8 @@ process partido[id:0..1]{
 process jugador[id:0..19]{
     int equipo;
     int can;
-    Formador.darEquipo(equipo)
-    formarPartido.unirse(equipo,can)
+    Formador.darEquipo(equipo);
+    barreraEquipos[equipo].listo(can);
     cancha[can].llegada()
 }
 ```

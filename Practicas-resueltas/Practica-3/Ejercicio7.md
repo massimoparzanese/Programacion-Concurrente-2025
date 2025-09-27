@@ -42,7 +42,7 @@ Monitor Maquina{
             int persona = pop(colaP)
             signal(esperarBotellas[persona])
         }
-        else libre = false;
+        else libre = true;
     }
 
     procedure esperarAviso(){

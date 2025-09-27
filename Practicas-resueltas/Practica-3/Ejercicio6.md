@@ -13,31 +13,31 @@ que le asigna a cada alumno.
 ## Resolución
 
 ```
-Monitor Fila {
+Monitor AsignadorTareas {
     cond [50] fila;
     cond condJ;
     int esperando = 0;
-    int [50] nroGrupo ;
+    int [50] nroGrupo = ([50] -1) ;
     procedure formarFila(idA: in int, numG: out int){
         esperando ++;
         if(esperando == 50) signal(condJ)
-        wait(fila[idA])
-        numG = nroGrupo[idA]
     }
-    procedure asignarTareas(){
+    procedure esperarAlu(){
         if(esperando < 50) wait(condJ);
-        for i 0 to 49{
-            int num;
-            asignadorTareas.asignar(num)
-            nroGrupo[i] = num;
-            signal(fila[i])
-        }
     }
-}
-Monitor asignadorTareas { // puede que esto este de mas y se pueda hacer en la misma fila
-    procedure asignar(num: out int){
-        num = AsignarNroGrupo()
-    }
+    Procedure esperarNumeroGrupo(nro: out int, id: in int){
+		if(nroGrupo[id] == -1){
+			wait(fila[id]);
+		}
+		nro = nroGrupo[id];
+	}
+		
+	Procedure asignarGrupo(){
+        int id;
+		cola.pop(id);
+		nroGrupo[id]=AsignarNroGrupo();
+		signal(esperaAlumno[id]);
+	}
 }
 Monitor Escritorio {
     cond [25] filaNotas;
@@ -76,7 +76,10 @@ process alumno[id: 0..49]{
     
 }
 process jtp{
-    Fila.asignarTareas()
+    AsignadorTareas.esperarAlu();
+    for (i:1..50){
+		AsignadorTareas.asignarGrupo();
+	}
     for i 1 to 25{
         Escritorio.calificar();
     }
