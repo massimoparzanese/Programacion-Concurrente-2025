@@ -27,6 +27,7 @@ process usuario[id: 0..U-1]{
     else {
         push(c,id)
         V(mutexCola)
+        P(espera[id])
     }
     if(latas == 0){
         V(repo)

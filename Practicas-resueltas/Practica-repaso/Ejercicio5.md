@@ -19,25 +19,27 @@ Monitor Equipo[id: 0..4]{
         if(cant == 4) signal_all(companieros)
         else wait(companieros)
     }
-
-}
-Monitor Ventas[id:0..4]{
-    int vendidos = 0;
-    prodecure vender(){
-        vendidos ++;
-    }
-    procedure actualVendidos(cant: out int){
-        cant = vendidos;
+     procedure actualVendidos(vendidos: in int, total: out int){
+        cant += vendidos;
+        if(cantCompañeros == 4){
+            signal_all(companieros)
+        }
+        else{
+            wait(companieros)
+        }
+        total = cant;
     }
 }
 procedure vendedores[id:0..19]{
     int num =..; // numero de equipo que sabe
     Equipo[num].juntarse()
+    int ventas = 0;
     while(cond) // no se que poner porque no se hasta cuando vende
     {
-        Ventas[num].vender();
+        // realiza venta
+        venta += 1;
     }
     int cant;
-    Ventas.actualVendidos(cant)
+    Ventas.actualVendidos(ventas,cant)
 }
 ```

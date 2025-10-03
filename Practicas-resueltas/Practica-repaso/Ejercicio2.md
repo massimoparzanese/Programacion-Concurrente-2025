@@ -21,24 +21,24 @@ sem mutex = 1
 int total = 0;
 process worker[id:0...6]{
     int valor;
+    INT INDICE_LOCAL = 0;
     while(indice_local < N){
         P(mutex_indice);
+        indice_local = i;
         if (i < N) {
-            indice_local = i;
             i = i + 1;
             V(mutex_indice);
             valor = Validar(transacciones[indice_local])
             P(valores[valor])
             resultados[valor] ++;
             V(valores[valor])
-
         } else {
             V(mutex_indice); 
         }
     }
     P(mutex)
     total +=1;
-    if(total == 10) for i 1 to 10 Imprimir(resultados[i])
+    if(total == 7) for i 0 to 9 Imprimir(resultados[i])
     V(mutex)
 }
 ```
