@@ -57,4 +57,4 @@ Como no pide respetar el orden de llegada, se puede utilizar de esa forma
 
 ### C
 
-La primera no respeta el orden de llegada porque tiene ciertos "errores", los cuales menciono en el inciso A. 
+La primera no respeta el orden de llegada porque tiene ciertos "errores"
