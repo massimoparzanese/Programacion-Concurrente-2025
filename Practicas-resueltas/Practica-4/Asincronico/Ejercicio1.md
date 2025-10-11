@@ -20,7 +20,7 @@ situaciones:
 
 ```
 chan pedidos(int); // pedidos a empleado por orden de llegada
-chan pasar[N](bool); // canal para esperar a ser atendido
+chan pasar[0..N-1](bool); // canal para esperar a ser atendido
 process Cliente [id:0..N-1]{
     bool ok;
     send pedidos(id)
@@ -40,7 +40,7 @@ process Empleado {
 
 ```
 chan pedidos(int); // pedidos a empleado por orden de llegada
-chan pasar[N](bool); // canal para esperar a ser atendido
+chan pasar[0..N-1](bool); // canal para esperar a ser atendido
 process Cliente [id:0..N-1]{
     bool ok;
     send pedidos(id)
@@ -63,7 +63,7 @@ process Empleado[id:0..1] {
 chan pedidos(int); // pedidos a empleado por orden de llegada
 chan enEspera(int)
 chan siguiente[2](int);
-chan pasar[N](bool); // canal para esperar a ser atendido
+chan pasar[0..N-1](bool); // canal para esperar a ser atendido
 process Cliente [id:0..N-1]{
     bool ok;
     send pedidos(id)

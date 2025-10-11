@@ -9,3 +9,12 @@ a) Implemente una solución para el problema descrito.
 b) Modifique la solución implementada para que el empleado dé prioridad a los que
 terminaron de usar la cabina sobre los que están esperando para usarla.
 Nota : maximizar la concurrencia; suponga que hay una función Cobrar() llamada por el empleado que simula que el empleado le cobra al cliente
+
+
+## Resolución 
+
+### Inciso A
+
+
+
+### Inciso B
