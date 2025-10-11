@@ -15,6 +15,78 @@ Nota : maximizar la concurrencia; suponga que hay una función Cobrar() llamada 
 
 ### Inciso A
 
+```
+chan pedidos(int)
+chan asignada[0..N-1](int)
+chan pagar(int,text);
+chan cabinasLibres(int) // Supongo que ya tiene todas las cabinas cargadas 
+chan ticket[0..N-1](text)
+process empleado {
+    int idP;
+    text pago;
+    int terminal;
+    while(true){
+        if(!empty(cabinasLibres) && !empty(pedidos)){
+            recieve pedidos(idP)
+            recieve cabinasLibres(terminal)
+            send asignada[idP](terminal)
+        }
+        if(!empty(pagar)){
+            recieve pagar(idP,pago)
+            send ticket[idP](Cobrar(pago))
+        }
+    }
+}
+process persona[id:0..N-1]{
+    int terminal;
+    text pago;
+    text ticketPago;
+    send pedidos(id)
+    recieve asignada[id](terminal)
+    // uso la terminal
+    send cabinasLibres(terminal)
+    send pagar(id,pago)
+    recieve ticket[id](ticketPago)
+}
+```
+
 
 
 ### Inciso B
+
+```
+chan pedidos(int)
+chan asignada[0..N-1](int)
+chan pagar(int,text);
+chan cabinasLibres(int) // Supongo que ya tiene todas las cabinas cargadas 
+chan ticket[0..N-1](text)
+process empleado {
+    int idP;
+    text pago;
+    int terminal;
+    while(true){
+        if(!empty(pagar)){
+            recieve pagar(idP,pago)
+            send ticket[idP](Cobrar(pago))
+        }
+        if(!empty(cabinasLibres) && !empty(pedidos)){
+            recieve pedidos(idP)
+            recieve cabinasLibres(terminal)
+            send asignada[idP](terminal)
+        }
+
+    }
+}
+process persona[id:0..N-1]{
+    int terminal;
+    text pago;
+    text ticketPago;
+    send pedidos(id)
+    recieve asignada[id](terminal)
+    // uso la terminal
+    send cabinasLibres(terminal)
+    send pagar(id,pago)
+    recieve ticket[id](ticketPago)
+}
+```
+
