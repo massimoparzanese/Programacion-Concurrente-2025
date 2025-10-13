@@ -48,6 +48,55 @@ process administrativo[id:0..N-1]{
 
 ### Inciso B
 
+```
+chan pedidos(int,doc)
+chan prioritarios(int, doc)
+chan devoluciones[0..N](doc)
+process Impresora[id:0..2]{
+    int idP;
+    doc documento;
+    doc devolucion;
+    bool encontre;
+    while(true){
+        encontre = false;
+        if (!empty(prioritarios)){
+            recieve prioritarios(idP,docomento)
+            encontre = true;
+        }
+        else if(!empty(pedidos)){
+            recieve pedidos(idP,docomento)
+            encontre = true;
+        }
+
+        if(encontre){
+            devolucion = Imprimir(documento)
+            send devoluciones[idP](devolucion)
+        }
+        
+    }
+}
+process administrativo[id:0..N-1]{
+    doc documento;
+    doc devolucion;
+    while (true){
+        documento = ...; // genera nuevo documento
+        send pedidos(id,documento);
+        recieve devoluciones[id](devolucion)
+        // Después de recibir la devolución, genera el siguiente documento en el loop.
+    }
+}
+process director {
+    doc documento;
+    doc devolucion;
+    while (true){
+        documento = ...; // genera nuevo documento
+        send prioritarios(N,documento);
+        recieve devoluciones[N](devolucion)
+        // Después de recibir la devolución, genera el siguiente documento en el loop.
+    }
+}
+```
+
 
 ### Inciso C
 
