@@ -18,23 +18,24 @@ Nota : maximizar la concurrencia; suponga que hay una función Cobrar() llamada 
 ```
 chan pedidos(int)
 chan asignada[0..N-1](int)
-chan pagar(int,text);
-chan cabinasLibres(int) // Supongo que ya tiene todas las cabinas cargadas 
+chan pagar(int,text,int);
 chan ticket[0..N-1](text)
 process empleado {
     int idP;
     text pago;
     int terminal;
+    cola cabinasLibres;
+    int cab;
     while(true){
-        if(!empty(cabinasLibres) && !empty(pedidos)){
+        if not empty(cabinasLibres) && not empty(pedidos) ->
             recieve pedidos(idP)
-            recieve cabinasLibres(terminal)
+            cab = pop(cabinasLibres(terminal))
             send asignada[idP](terminal)
-        }
-        if(!empty(pagar)){
-            recieve pagar(idP,pago)
+        □ (!empty(pagar)) ->
+            recieve pagar(idP,pago,cab)
+            push(cabinasLibres,cab)
             send ticket[idP](Cobrar(pago))
-        }
+        
     }
 }
 process persona[id:0..N-1]{
@@ -44,8 +45,7 @@ process persona[id:0..N-1]{
     send pedidos(id)
     recieve asignada[id](terminal)
     // uso la terminal
-    send cabinasLibres(terminal)
-    send pagar(id,pago)
+    send pagar(id,pago,terminal)
     recieve ticket[id](ticketPago)
 }
 ```
@@ -65,16 +65,13 @@ process empleado {
     text pago;
     int terminal;
     while(true){
-        if(!empty(pagar)){
+        if not empty(pagar) ->
             recieve pagar(idP,pago)
             send ticket[idP](Cobrar(pago))
-        }
-        if(!empty(cabinasLibres) && !empty(pedidos)){
+        □ not empty(cabinasLibres) && not empty(pedidos) && empty(pagar)-> 
             recieve pedidos(idP)
             recieve cabinasLibres(terminal)
             send asignada[idP](terminal)
-        }
-
     }
 }
 process persona[id:0..N-1]{
@@ -84,8 +81,7 @@ process persona[id:0..N-1]{
     send pedidos(id)
     recieve asignada[id](terminal)
     // uso la terminal
-    send cabinasLibres(terminal)
-    send pagar(id,pago)
+    send pagar(id,pago,terminal)
     recieve ticket[id](ticketPago)
 }
 ```

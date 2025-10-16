@@ -59,15 +59,12 @@ process Impresora[id:0..2]{
     bool encontre;
     while(true){
         encontre = false;
-        if (!empty(prioritarios)){
+        □ not empty(prioritarios) ->
             recieve prioritarios(idP,docomento)
             encontre = true;
-        }
-        else if(!empty(pedidos)){
+        else not empty(pedidos) && empty(prioritarios) ->
             recieve pedidos(idP,docomento)
             encontre = true;
-        }
-
         if(encontre){
             devolucion = Imprimir(documento)
             send devoluciones[idP](devolucion)

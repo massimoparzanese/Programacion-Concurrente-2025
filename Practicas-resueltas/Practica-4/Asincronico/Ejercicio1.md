@@ -84,10 +84,10 @@ process Empleado[id:0..1] {
 process Coordinador {
     int idEmple;
     int idP;
-    for i 1 to N {
+    while(true){
+        recieve enEspera(idEmple)
         if(!empty(pedidos)) recieve pedidos(idP)
         else idP = -1;
-        recieve enEspera(idEmple)
         send siguiente[idEmple](idP)
     }
 }

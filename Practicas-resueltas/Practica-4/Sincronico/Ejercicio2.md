@@ -10,7 +10,7 @@ resultado al segundo empleado.
 
 ## Resolucion
 
-```
+``` falta coordinador en el medio de armador y preparador
 process preparador{
     text muestra;
     while(true){

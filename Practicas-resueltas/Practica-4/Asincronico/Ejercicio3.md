@@ -25,7 +25,7 @@ process Coordinador{
         else {
             recieve espera(idP,pedido)
         }
-        end pedidos[idV](idP,pedido)
+        send pedidos[idV](idP,pedido)
     }
 }
 process Cocinero[id:0..1]{

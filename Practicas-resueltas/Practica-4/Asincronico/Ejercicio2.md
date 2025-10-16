@@ -18,26 +18,26 @@ chan cola[0..4](int,text)
 chan comprobantes[0..P-1](text)
 chan ClienteAtendido(int); // Canal para que el Cajero informe al Coordinador la liberación
 
-process Coordinador {
+process Coordinador { // hacer con if no deterministico entre ambas alternativas co prioridad en el !empty
     int cantPorCola[5] = ([5] 0) // indice de 0 a 4
     int cajaLiberada;
     for i 1 to N{
         int idP;
         int minimo = 0;
         int cantAux = 0;
-        recieve espera(idP);
-        for i 1 to 4 { // busco la cola con menor cantidad de personas
-            if(cantPorCola[i] < cantAux) {
-                minimo = i;
-                cantAux = cantPorCola[i];
+        if not empty(comprobantes) && empty(ClienteAtendido)
+            recieve espera(idP);
+            for i 1 to 4 { // busco la cola con menor cantidad de personas
+                if(cantPorCola[i] < cantAux) {
+                    minimo = i;
+                    cantAux = cantPorCola[i];
+                }
             }
-        }
-        cantPorCola[minimo]++;
-        send esperarAviso[idP](minimo);
-        while(!empty(ClienteAtendido)){ 
+            cantPorCola[minimo]++;
+            send esperarAviso[idP](minimo);
+        □ not empty(ClienteAtendido) ->
             receive ClienteAtendido(cajaLiberada); // Recibe el ID de la caja liberada
             cantPorCola[cajaLiberada]--;         // Resta y mantiene la coherencia
-        }
         
     }
     

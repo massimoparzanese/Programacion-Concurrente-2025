@@ -7,8 +7,7 @@ a) Considerando que P=1.
 b) Considerando que P>1.
 c) Ídem b) pero considerando que los alumnos no comienzan a realizar su examen hasta
 que todos hayan llegado al aula.
-Nota: maximizar la concurrencia; no generar demora innecesaria; todos los procesos deben
-terminar su ejecución
+Nota: maximizar la concurrencia; no generar demora innecesaria; todos los procesos deben terminar su ejecución
 
 ## Resolución
 
@@ -20,11 +19,13 @@ process Admin {
     cola fila;
     text exam;
     int idA;
-    do Alumno[*]?entregas(exam,idA) ->  push(fila,(exam,idA)); 
+    for i = 1 to  N*2{
+    if Alumno[*]?entregas(exam,idA) ->  push(fila,(exam,idA)); 
     □ not empty(fila); profesor?listo() -> 
         idA,exam = pop(fila)
         profesor!corregir(exam,idA);
-     od
+    fi
+    }
 
 }
 process profesor{
@@ -56,16 +57,18 @@ process Admin {
     text exam;
     int idA;
     int idP;
-    int examenes_procesados = 0;
+    int cantAvisos = 0;
     do Alumno[*]?entregas(exam,idA) ->  push(fila,(exam,idA)); 
-    □ not empty(fila); profesor[*]?listo(idP) -> 
+     □ not empty(fila); profesor[*]?listo(idP) -> 
         idA,exam = pop(fila)
         profesor[idP]!corregir(exam,idA);
         examenes_procesados++;
-    □ empty(fila);  examenes_procesados == N; 
-      Profesor[*]?listo(idP) -> 
-        Profesor[idP]!fin_trabajo(true); 
-     od
+    □ empty(fila);  examenes_procesados == N && cantAvisos < P; 
+        Profesor[*]?listo(idP) -> 
+        profesor[idP]!corregir("vacio",-1);
+        cantAvisos++;
+    od
+    
 
 }
 process profesor [0..P-1]{
@@ -76,11 +79,11 @@ process profesor [0..P-1]{
     while(not terminamos){
         Admin!listo(id); // Pide el siguiente examen
         if Admin?corregir(exam, idA) ->
-            nota = corregir(exam); 
-            Alumno[idA]!correccion(nota);
-        □ Admin?fin_trabajo(terminamos) -> 
-            skip
-        fi
+            if(exam == vacio) terminamos = true;
+            else{
+                nota = corregir(exam); 
+                Alumno[idA]!correccion(nota);
+            }
     }
 
 }
@@ -94,3 +97,49 @@ process alumno[id: 0..N-1]{
 ```
 
 ### Inciso C
+
+```
+process Barrera {
+    int cant = 0;
+    do Alumno[*]?llegada
+}
+process Admin {
+    cola fila;
+    text exam;
+    int idA;
+    int idP;
+    do Alumno[*]?entregas(exam,idA) ->  push(fila,(exam,idA)); 
+     □ not empty(fila); profesor[*]?listo(idP) -> 
+        idA,exam = pop(fila)
+        profesor[idP]!corregir(exam,idA);
+        examenes_procesados++;
+    □ empty(fila);  examenes_procesados == N; 
+        Profesor[*]?listo(idP) -> 
+        profesor[idP]!corregir("vacio",-1);
+    od
+
+}
+process profesor [0..P-1]{
+    int nota;
+    int idA;
+    text exam;
+    bool terminamos
+    while(not terminamos){
+        Admin!listo(id); // Pide el siguiente examen
+        if Admin?corregir(exam, idA) ->
+            if(exam == vacio) terminamos = true;
+            else{
+                nota = corregir(exam); 
+                Alumno[idA]!correccion(nota);
+            }
+    }
+
+}
+process alumno[id: 0..N-1]{
+    int nota;
+    text exam;
+    exam = resolver();
+    Admin!entregas(exam,id)
+    profesor[*]?corregido(nota)
+}
+```
