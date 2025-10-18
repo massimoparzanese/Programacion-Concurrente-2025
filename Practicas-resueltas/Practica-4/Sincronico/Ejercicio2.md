@@ -11,11 +11,18 @@ resultado al segundo empleado.
 ## Resolucion
 
 ``` falta coordinador en el medio de armador y preparador
+process administrador {
+    Cola Buffer;
+    text muestra;
+    do preparador?muestras(muestra) ->
+        push(cola,muestra)
+    □ not empty(Buffer); armador?listo
+}
 process preparador{
     text muestra;
     while(true){
         muestra = prepararMuestra();
-        armador!muestras(muestra)
+        administrador!muestras(muestra)
     }
 }
 process armador {
@@ -23,7 +30,7 @@ process armador {
     set s; // set de analisis
     text r; // resultado esperado
     while (true){
-        preparador?muestras(m)
+        administrador?muestras(m)
         s = armarSet(m);
         analista!sets(s);
         analista?resultados(r);

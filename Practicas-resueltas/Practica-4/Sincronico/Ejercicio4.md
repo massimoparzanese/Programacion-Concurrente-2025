@@ -10,3 +10,68 @@ su identificador (hasta que la persona i no lo haya usado, la persona i+1 debe e
 c) Modifique la solución a) para que el empleado considere el orden de llegada para dar
 acceso al simulador.
 Nota: cada persona usa sólo una vez el simulador.
+
+
+## Resolucion
+
+### Inciso A
+
+```
+process empleado {
+    int idP
+    for i 1 to P{
+        cliente[*]?pedido(idP)
+        cliente[idP]?salir() 
+    }
+}
+process cliente[id: 0..P-1]{
+    empleado!pedido(id)
+    empleado!salir()
+}
+```
+
+### Inciso B
+
+```
+process empleado {
+    for i 1 to P{
+        cliente[i]?pedido()
+        cliente[i]!pasar() // deja pasar
+        cliente[i]?salir() 
+    }
+}
+process cliente[id: 0..P-1]{
+    empleado!pedido()
+    empleado?pasar() // espera aviso
+    empleado!salir()
+}
+```
+
+### Inciso C
+
+
+```
+process admin {
+    int idC;
+    cola Buffer;
+    do cliente[*]?pedido(idC) ->  push(Buffer, idC); 
+    □ not empty(Buffer); empleado?listo() -> 
+        idC = pop(Buffer);
+        empleado!pedido(idC)
+     od
+}
+process empleado {
+    int idP;
+    for i 1 to P{
+        admin!listo()
+        admin?pedido(idP)
+        cliente[idP]!pasar() // deja pasar
+        cliente[idP]?salir() 
+    }
+}
+process cliente[id: 0..P-1]{
+    admin!pedido(id)
+    empleado?pasar() // espera aviso
+    empleado!salir()
+}
+```

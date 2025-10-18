@@ -59,10 +59,10 @@ process Impresora[id:0..2]{
     bool encontre;
     while(true){
         encontre = false;
-        □ not empty(prioritarios) ->
+        if not empty(prioritarios) ->
             recieve prioritarios(idP,docomento)
             encontre = true;
-        else not empty(pedidos) && empty(prioritarios) ->
+        else if not empty(pedidos) ->
             recieve pedidos(idP,docomento)
             encontre = true;
         if(encontre){

@@ -63,7 +63,7 @@ process Admin {
         idA,exam = pop(fila)
         profesor[idP]!corregir(exam,idA);
         examenes_procesados++;
-    □ empty(fila);  examenes_procesados == N && cantAvisos < P; 
+    □ empty(fila) && examenes_procesados == N && cantAvisos < P; 
         Profesor[*]?listo(idP) -> 
         profesor[idP]!corregir("vacio",-1);
         cantAvisos++;
@@ -98,7 +98,7 @@ process alumno[id: 0..N-1]{
 
 ### Inciso C
 
-```
+``` // FALTA TERMINAR, es preferible que el admin sea la barrera
 process Barrera {
     int cant = 0;
     do Alumno[*]?llegada

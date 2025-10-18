@@ -29,20 +29,29 @@ Se requieren dos tipos de procesos para resolverlo, pero en caso de querer maxim
 ### Inciso B
 
 ```
-process Analizador {
+process admin {
     text url;
-    while (true) {
-        Examinador[*]?reporte(url); 
-        resultado = analizar_sitio(url); 
+     cola Buffer; 
+    do Examinador[*]?reportar(url) ->  push(Buffer, url); // Siempre acepta reportes para no bloquear a los Examinadores
+    □ not empty(Buffer); Analizador?pedido() -> 
+        url = pop(Buffer);
+        Analizador!url(url); 
+     od
+}
+process examinador[id:0..N-1]{
+    text url;
+    while (true){
+        url = ...; // url sitio a analizar
+        // examina sitio
+        admin!examinar(url);
     }
 }
-process Examinador[id: 0..R-1] {
-    text url;
-    
+process Analizador {
+    text urlAux;
     while (true) {
-        url = generar_sitio_a_examinar();  
-        Analizador!reporte(url); 
-        // buscando inmediatamente.
+        admin!pedido()
+        admin?url(urlAux)
+        resultado = analizar_sitio(urlAux); 
     }
 }
 ```

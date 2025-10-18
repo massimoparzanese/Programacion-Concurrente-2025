@@ -24,13 +24,13 @@ process empleado {
     int idP;
     text pago;
     int terminal;
-    cola cabinasLibres;
+    cola cabinasLibres; // precargada con cabinas
     int cab;
     while(true){
         if not empty(cabinasLibres) && not empty(pedidos) ->
             recieve pedidos(idP)
-            cab = pop(cabinasLibres(terminal))
-            send asignada[idP](terminal)
+            cab = pop(cabinasLibre)
+            send asignada[idP](cab)
         □ (!empty(pagar)) ->
             recieve pagar(idP,pago,cab)
             push(cabinasLibres,cab)
@@ -57,21 +57,24 @@ process persona[id:0..N-1]{
 ```
 chan pedidos(int)
 chan asignada[0..N-1](int)
-chan pagar(int,text);
-chan cabinasLibres(int) // Supongo que ya tiene todas las cabinas cargadas 
+chan pagar(int,text,int);
 chan ticket[0..N-1](text)
 process empleado {
     int idP;
     text pago;
     int terminal;
+    cola cabinasLibres; // precargada con terminales
+    int cab;
     while(true){
-        if not empty(pagar) ->
-            recieve pagar(idP,pago)
-            send ticket[idP](Cobrar(pago))
-        □ not empty(cabinasLibres) && not empty(pedidos) && empty(pagar)-> 
+        if not empty(cabinasLibres) && not empty(pedidos) && empty(pagar) ->
             recieve pedidos(idP)
-            recieve cabinasLibres(terminal)
+            cab = pop(cabinasLibres(terminal))
             send asignada[idP](terminal)
+        □ !empty(pagar)  || empty(cabinasLibres)->
+            recieve pagar(idP,pago,cab)
+            push(cabinasLibres,cab)
+            send ticket[idP](Cobrar(pago))
+        
     }
 }
 process persona[id:0..N-1]{
