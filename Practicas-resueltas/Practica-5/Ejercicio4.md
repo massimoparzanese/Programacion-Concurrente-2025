@@ -31,7 +31,10 @@ Procedure clinica is
     Task type enfermera;
     Task escritorio is
         Entry pedidosEnf(pedido: in text);
+        Entry recibirPedido(pedido: out text);
     end escritorio;
+
+    Task administrador;
 
     arrCLiente: array(1..P) of cliente;
     arrEnfermera: array(1..E) of enfermera;
@@ -78,8 +81,10 @@ Procedure clinica is
                 ACCEPT pedidosEnf(pedido: in text) do
                     push(cola,pedido)
                 end pedidosEnf;
-            OR
-                Medico.pedidosEnf(pop(cola))
+            OR when(not cola.empty()) => 
+                ACCEPT recibirPedido(pedido: out text) do
+                    pedido = pop(cola)
+                end recibirPedido;
             end select;
         end loop;
     end escritorio;
@@ -93,11 +98,22 @@ Procedure clinica is
                     p = pedido;
                     resp = atenter(p);
                 end pedidosCli;
-            Else 
-                Accept pedidosEnf(pedido: in text);
+            Or 
+            when(pedidosCli'count == 0 )=> Accept pedidosEnf(pedido: in text);
+            Or when(pedidosCli'count == 0 )=> Accept pedidosAdmin(pedido: in text);
             end Select;
         END loop;
     end medico;
+
+
+    Task body administrador is
+        pedido: text;
+    begin
+        loop
+            Escritorio.recibirPedido(pedido);
+            Medico.pedidosAdmin(pedido);
+        edn loop;
+    end administrador;
 begin
 end clinica;
 ```

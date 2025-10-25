@@ -35,16 +35,16 @@ Procedure Universidad is
 
     Task body usuario is
         documento: text;
-        error: boolean
+        exito: boolean
     begin
-        error:= false;
+        eexito:= false;
         documento = generarDocumento();
-        while (not (error)) do
+        while (not (exito)) do
             SELECT 
-                Servidor.pedidos(documento, error);
-                if(not (error)) {
+                Servidor.pedidos(documento, exito);
+                if(not (exito)) 
                     documento = arreglarDoc();
-                }
+                end if;
             Or delay 2 minutos
                 delay 1 minuto
             end select;

@@ -67,7 +67,7 @@ Procedure Puente is
                 when(pesoRestante - 3 >= 0) => ACCEPT pedidoC do
                                                   pesoRestante = pesoRestante - 3;
                                                 END pedidoC;
-            ELSE 
+            OR 
                 ACCEPT salidas(aux) do
                     pesoRestante = pesoRestante + aux;
                 END salidas;
@@ -139,7 +139,7 @@ Procedure Puente is
                 when(pedidoC'count = 0 and pesoRestante - 2 >= 0) => ACCEPT pedidoB do
                                                                         pesoRestante = pesoRestante - 2;
                                                                        END pedidoB;    
-            ELSE 
+            OR
                 ACCEPT salidas(aux) do
                     pesoRestante = pesoRestante + aux;
                 END salidas;

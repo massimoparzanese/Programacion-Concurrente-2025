@@ -19,10 +19,14 @@ Process sistemaComputo is
     Task central is
         Entry pedidos1(señal: in text);
         Entry pedidos2(señal: in text);
+        Entry terminar;
     end central;
 
     Task periferico1;
     Task periferico2;
+    Task timer is
+        Entry exclusivo;
+    end timer;
 
     Task body periferico1 is
         señal: text;
@@ -59,22 +63,34 @@ Process sistemaComputo is
         exclusivo:= false;
         ACCEPT pedidos1(señal:in text);
         LOOP
-            if(exclusivo) then
+            if(not exclusivo) then
                 SELECT
                     accept pedidos1(señal:in text);
                 or
                     accept pedidos2(señal:in text);
-                    modo_exclusivo := True;
+                    exclusivo := True;
+                    Timer.exclusivo;
                 end select;
             else
                 SELECT
                     accept pedidos2(señal: in text);
-                or delay 3 minutos
-                    modo_exclusivo := False;
+                or 
+                    accept terminar() do
+                        exclusivo:= false;
+                    end terminar;
                 end select;
             end if;
         END loop;
     end;
+
+    Task body Timer is
+    begin
+        loop 
+            Accept exclusivo;
+            delay 3 minutos
+            Central.terminar;
+        end loop;
+    end timer;
 
 begin
     null;
