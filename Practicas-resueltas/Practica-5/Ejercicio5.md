@@ -16,20 +16,16 @@ persona existe una función Moneda() que retorna el valor de la moneda encontrad
 procedure playa is
 
     Task type barrera is 
-        Entry llegada(id: in int);
+        Entry llegada();
+        Entry esperarCompañeros;
         Entry resultados(resul: in int);
-        Entry espera(max: in int);
+        Entry resultadoFinal(max: out int);
     end barrera;
 
-    Task type persona is 
-        Entry esperarCompañeros;
-        Entry identificacion(i: in int);
-        Entry resultadoFinal(max: in int);
-    end persona;
+    Task type persona;
 
-    Task coordinadorGeneral is
-        Entry puntajes(puntaje: in int);
-    end coordinadorGeneral;
+    Task coordinadorGeneral is 
+
 
 
     arrayPersonas: array(1.20) of persona;
@@ -41,35 +37,62 @@ procedure playa is
     begin
         auxMax = 0;
         for i: 1 to 5 loop
-            Accept puntajes(max: in int);
+            Accept maximo(max: in int);
             if(max > auxMax) auxMax = max;
         end loop;
         for i: 1 to 5 loop
-            arrayBarrera(i).espera(auxMax);
+            Accept espera(max: out int)do
+                max = auxMax;
+            end espera;
         end loop;
     end coordinadorGeneral;
 
     Task body barrera is
         aux: int;
-        buffer: cola; 
-        auxId: int;
+        auxMax: int;
     begin
         aux:= 0;
         for i: 1 to 5 loop // espero a que lleguen todos
-            Accept llegada(id: in int)do
-                push(buffer,id) // me guardo los id de los de mi equipo
-            end llegada;
+            Accept llegada();
         end loop;
         for i: 1 to 5 loop // Les aviso que pueden seguir
-            auxId = pop(buffer);
-            arrayPersonas(auxId).esperarCompañeros;
+            Accept esperarCompañeros();
+        end loop;
+        for i: 1 to 5 loop // recibo resultados de juntar monedas
+            Accept resultados(resul: in int) do
+                aux:= aux + resul;
+            end resultados;
+        end loop;
+        
+        coordinadorGeneral.maximo(aux);
+        coordinadorGeneral.espera(auxMax);
+
+        for i: 1 to 5 loop // Les aviso que pueden seguir
+            Accept resultadoFinal(max: out int) do
+                max = auxMax;
+            end resultadoFinal;
         end loop;
     end barrera;
 
+    Task body persona is
+        recaudado: int;
+        equipo: int;
+        aux: int
+    begin
+        recaudado:= 0;
+        equipo: ...; // se le asigna su equipo que ya ocnoce
+        arrayBarrera(equipo).llegada();
+        arrayBarrera(equipo).esperarCompañeros();
+        for i: 1 to 15 loop
+            aux = Moneda();
+            recaudado:= recaudado + aux;
+        end loop;
+        arrayBarrera(equipo).resultados(recaudado);
+        arrayBarrera(equipo).resultadoFinal(recaudado);
+    end persona;
 
 begin 
-    for i 1 to 20 loop
-        arrayPersonas(i).identificacion(i)
-    end loop;
+
 end playa;
 ```
+// Hacer que la barrera acepte siempre y el coordinador general le envie el max a las barreras
