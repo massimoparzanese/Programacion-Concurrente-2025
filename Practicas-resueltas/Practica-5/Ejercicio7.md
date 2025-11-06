@@ -23,6 +23,7 @@ Procedure sistema is
     Task especialista is
         Entry imagen(img: out text);
         Entry resultados(cod: in int, valor: in int);
+        Entry seguir()
     end especialista;
 
 
@@ -39,17 +40,21 @@ Procedure sistema is
         codigo:=0;
         loop
             test: ..; // toma imagen de huella
-            for i 1 to 8 loop
-                Accept imagen(img: out text) do
-                    img:= test;
-                end imagen;
+            for i: 1 to 16
+                SELECT 
+                    Accept imagen(img: out text) do
+                        img:= test;
+                    end imagen;
+                OR
+                    Accept resultados(auxCod, auxValor);
+                    if(auxValor >= valor) then
+                        valor = auxValor;
+                        cod = auxCod;
+                    end if;
+                end select;
             end loop;
-            for i 1 to 8 loop
-                Accept resultados(auxCod, auxValor);
-                if(auxValor >= valor) then
-                    valor = auxValor;
-                    cod = auxCod;
-                end if;
+            for i 1 to 8 loop;
+                Accept seguir();
             end loop;
         end loop;
     end especialista;
@@ -63,6 +68,7 @@ Procedure sistema is
             Especialista.imagen(img);
             Buscar(img,cod,valor)
             Especialista.resultados(cod,valor);
+            Especialista.seguir()
         end loop;
     end servidor;
 begin

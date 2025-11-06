@@ -37,7 +37,7 @@ Procedure programa is
             end resul;
             valorFinal:= valorFinal + aux;
         end loop;
-        valorFinal:= valorFinal / 10;
+        valorFinal:= valorFinal / 1000000;
     end coordinador;
 
     Task body worker is

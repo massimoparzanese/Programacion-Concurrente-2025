@@ -37,8 +37,8 @@ procedure playa is
     begin
         auxMax = 0;
         for i: 1 to 5 loop
-            Accept maximo(max: in int);
-            if(max > auxMax) auxMax = max;
+            Accept maximo(max: in int)do
+                if(max > auxMax) auxMax = max;
         end loop;
         for i: 1 to 5 loop
             Accept espera(max: out int)do
