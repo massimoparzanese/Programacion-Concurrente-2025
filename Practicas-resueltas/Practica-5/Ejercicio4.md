@@ -99,7 +99,7 @@ Procedure clinica is
                     resp = atenter(p);
                 end pedidosCli;
             Or 
-            when(pedidosCli'count == 0 )=> Accept pedidosEnf(pedido: in text);
+                when(pedidosCli'count == 0 )=> Accept pedidosEnf(pedido: in text);
             Or when(pedidosCli'count == 0 )=> Accept pedidosAdmin(pedido: in text);
             end Select;
         END loop;
