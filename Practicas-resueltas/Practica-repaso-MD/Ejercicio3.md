@@ -44,5 +44,24 @@ process caja {
     }
 }
 
-process persona[id:0..]
+process persona[id:0..P-1]{
+    cantBoletas: int;
+    dinero: real;
+    recibo: text;
+    vuelto: real;
+    anciano: bool;
+    anciano = ...; // si soy anciano esta en true
+    cantBoletas =...; // cant definida
+    dinero = ..;
+    if(anciano){
+        send reciboAncianos(cantBoletas,dinero,id)
+    }
+    else if (cantBoletas < 5) {
+        send recibosMenor(cantBoletas,dinero,id)
+    }
+    else {
+        send recibosMayor(cantBoletas,dinero,id)
+    }
+    recieve recibos[id](recibo, vuelto);
+}
 ```
